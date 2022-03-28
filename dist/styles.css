@@ -1,0 +1,33 @@
+.block {
+    background-color: darkslategrey;
+}
+h1 {
+    color: white;
+    text-align: left;
+}
+h5 {
+    color: white;
+    text-align: left;
+}
+
+.container {
+    padding-top: 100px;
+    padding-bottom: 100px;
+}
+
+.sr-only {
+    position: absolute;
+  
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+  
+    white-space: nowrap;
+  }
+
+  .form-row {
+      padding-top: 1.5rem;
+  }
+  

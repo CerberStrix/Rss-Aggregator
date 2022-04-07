@@ -1,9 +1,10 @@
-import * as yup from 'yup';
 import onChange from 'on-change';
 import i18next from 'i18next';
 import ru from './locales/ru.js'
-import render from './render.js';
-import feedsRender from './feedsRender.js';
+import validate from './validate.js';
+import rssParser from './rssParser.js';
+import formRender from './formRender.js';
+import contentRender from './contentRender.js';
 
 
 const runApp = () => {
@@ -11,10 +12,9 @@ const runApp = () => {
     const state = {
         lng: defaultLanguage,
         rssForm: {
-            valid: true,
-            feeds: [],
-            error: null,
-        }
+            state: null,
+        },
+        feeds: []
     };
 
     const i18nInstance = i18next.createInstance();
@@ -28,8 +28,8 @@ const runApp = () => {
 
 
     const watchedState = onChange(state, (path, value) => {
-        render(path, value, i18nInstance);
-        feedsRender(state);
+        formRender(path, value, i18nInstance)
+        contentRender(state)
     })
 
     const formElement = document.querySelector('.rss-form');
@@ -41,22 +41,37 @@ const runApp = () => {
         const formData = new FormData(e.target);
         const rss = formData.get('rss')
         formElement.reset();
-        const schema = yup.string().required().url();
-        const validatePromise = schema.isValid(rss)
-        validatePromise
+
+        validate(rss, state)
         .then((data) => {
-            if (data === true) {
-                if (watchedState.rssForm.feeds.includes(rss)) {
-                    watchedState.rssForm.valid = 'link already has';
-                    
-                } else {
-                    state.rssForm.feeds.push(rss)
-                    watchedState.rssForm.valid = 'correct link';
-                }
-            } else {
-                watchedState.rssForm.valid = 'invalid link';
-                
+            if (data !== '') {
+                throw new Error(`${data}`)
             }
+        })
+        .then(() => {
+            return fetch(`https://allorigins.hexlet.app/get?disableCache=true&url=${encodeURIComponent(rss)}`)
+        })
+        .then((response) => {
+            if (response.ok) return response.json()
+            throw new Error('netWorkError')
+        })
+        .then((data) => {
+            let xmlString = data.contents;
+            return xmlString
+          })
+        .then((xmlString) => {
+            console.log('Начинаем парсить')
+            return rssParser(rss, xmlString)
+        })
+        .then((data) => {
+            watchedState.rssForm.state = 'success';
+            watchedState.feeds.push(data);
+            console.log(state)
+        })
+        .catch((error) => {
+            watchedState.rssForm.state = error.message;
+            console.log('Поймали ошибку')
+            console.log(state.rssForm)
         })
     })
 };

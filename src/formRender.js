@@ -1,5 +1,5 @@
 export default (path, value, i18nInstance) => {
-if (path === 'rssForm.valid') {
+if (path === 'rssForm.state') {
     const textElement = document.querySelector('.text-muted');
     if (textElement.nextElementSibling) {
         textElement.nextElementSibling.remove();
@@ -10,20 +10,25 @@ if (path === 'rssForm.valid') {
     const attentionTextElement = document.createElement('p');
     attentionTextElement.classList.add('text-danger');
     switch (value) {
-        case 'link already has':
+        case 'duplicateUrl':
             rssElement.classList.add('is-invalid');
             attentionTextElement.textContent = i18nInstance.t('already_added_link');
             containerForFeedBack.append(attentionTextElement)
             return
-        case 'correct link':
+        case 'success':
             if (textElement.nextElementSibling) {
                 textElement.nextElementSibling.remove();
             }
             
             return
-        case 'invalid link':
+        case 'invalidUrl':
             rssElement.classList.add('is-invalid');
             attentionTextElement.textContent = i18nInstance.t('invalid_link');
+            containerForFeedBack.append(attentionTextElement)
+            return
+        case 'Parsing Error':
+            rssElement.classList.add('is-invalid');
+            attentionTextElement.textContent = i18nInstance.t('parsingError');
             containerForFeedBack.append(attentionTextElement)
             return
         }

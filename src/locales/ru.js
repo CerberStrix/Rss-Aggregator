@@ -1,8 +1,9 @@
 export default {
-    translation: {
-      invalid_link: 'Ссылка должна быть валидным URL',
-      succes_load: 'RSS успешно загружен',
-      already_added_link: 'RSS уже существует',
-      parsingError: 'Ресурс не содержит валидный RSS'
-    },
-  };
+  translation: {
+    successLoad: 'RSS успешно загружен',
+    invalidUrl: 'Ссылка должна быть валидным URL',
+    duplicateUrl: 'RSS уже существует',
+    parsingError: 'Ресурс не содержит валидный RSS',
+    netWorkError: 'Проверьте подключение к сети',
+  },
+};

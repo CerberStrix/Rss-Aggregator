@@ -1,6 +1,6 @@
-import "./styles.css";
+import './styles.css';
 
 import 'bootstrap';
-import { runApp } from "./init.js";
+import runApp from './init.js';
 
-runApp()
+runApp();

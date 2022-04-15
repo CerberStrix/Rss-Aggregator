@@ -20,6 +20,9 @@ h5 {
     height: 250px;
 }
 
+.modal-title {
+  color: #333;
+}
 .sr-only {
     position: absolute;
   
@@ -45,4 +48,9 @@ h5 {
     font-size: 0.9rem;
     margin-top: 0px;
     margin-bottom: 0px;
+  }
+
+  ul{ 
+    list-style: none;
+    margin: 0;
   }

@@ -5,5 +5,6 @@ export default {
     duplicateUrl: 'RSS уже существует',
     parsingError: 'Ресурс не содержит валидный RSS',
     netWorkError: 'Проверьте подключение к сети',
+    view: 'Просмотр',
   },
 };

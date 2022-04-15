@@ -1,4 +1,3 @@
-/* eslint-disable no-undef */
 export default (value, i18nInstance) => {
   if (document.querySelector('[data-toggle="feedbackText"]')) {
     document.querySelector('[data-toggle="feedbackText"]').remove();
@@ -14,7 +13,6 @@ export default (value, i18nInstance) => {
   switch (value) {
     case 'successLoad':
       console.log('Отработал положительный сценарий');
-      console.log(i18nInstance.t(value));
       progressNotification.classList.remove('text-danger');
       progressNotification.classList.add('text-success');
       progressNotification.textContent = i18nInstance.t(value);
@@ -45,6 +43,6 @@ export default (value, i18nInstance) => {
       containerForFeedBack.append(progressNotification);
       break;
     default:
-      console.log(`Sorry, we are out of ${expr}.`);
+      console.log(`Sorry, we are out of ${value}.`);
   }
 };

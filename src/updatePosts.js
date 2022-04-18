@@ -1,10 +1,9 @@
-import { reject } from 'lodash';
 import getResponse from './getResponse.js';
 import rssParser from './rssParser.js';
 import getPosts from './getPosts.js';
 
 function updateFeedData(link, id) {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     getResponse(link).then((responseData) => resolve([id, responseData])).catch(() => reject(new Error(`Ошибка при запросе данных фида ${link}`)));
   });
 }

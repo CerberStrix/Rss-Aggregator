@@ -1,4 +1,4 @@
-name: Linter and test check
+name: Linter test
 on: push
 jobs:
   # Set the job key. The key is displayed as the job name
@@ -21,8 +21,6 @@ jobs:
       # Runs the Linter action
       - name: Run super-linter
         run: make lint
-      - name: Run jest
-        run: make test
       - name: Test & publish code coverage
         # Publish code coverage on Code Climate
         # https://github.com/paambaati/codeclimate-action

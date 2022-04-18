@@ -3,7 +3,7 @@ export default (state) => {
   feedElement.innerHTML = '';
   const feedCard = document.createElement('div');
   feedCard.classList.add('card-body');
-  const feedTittle = document.createElement('h2');
+  const feedTittle = document.createElement('h3');
   feedTittle.textContent = 'Фиды';
   feedCard.append(feedTittle);
   feedElement.append(feedCard);

@@ -13,7 +13,7 @@ export default (state, i18nInstance, watchedState) => {
   postsElement.innerHTML = '';
   const postCard = document.createElement('div');
   postCard.classList.add('card-body');
-  const postTittle = document.createElement('h2');
+  const postTittle = document.createElement('h3');
   postTittle.textContent = 'Посты';
   postCard.append(postTittle);
   postsElement.append(postCard);

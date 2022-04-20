@@ -6,9 +6,13 @@ export default (link, state) => {
   const schema = yup.string().url().notOneOf(feedsLinks).required();
   return schema.validate(link, { abortEarly: false })
     .then(() => '').catch((e) => {
-      if (e.message === 'this must be a valid URL') {
-        throw new Error('invalidUrl');
+      switch (e.message) {
+        case 'this is a required field':
+          throw new Error('emptyUrl');
+        case 'this must be a valid URL':
+          throw new Error('invalidUrl');
+        default:
+          throw new Error('duplicateUrl');
       }
-      throw new Error('duplicateUrl');
     });
 };

@@ -1,16 +1,11 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
+import init from './controller.js';
 import ru from './locales/ru.js';
-import validate from './validate.js';
-import rssParser from './rssParser.js';
-import formRender from './renders/formRender.js';
-import feedsRender from './renders/feedsRender.js';
-import postsRender from './renders/postsRender.js';
-import getResponse from './getResponse.js';
-import getFeed from './getFeed.js';
-import getPosts from './getPosts.js';
-import updatePosts from './updatePosts.js';
-import uiRender from './renders/uiRender.js';
+
+import {
+  formRender, postsRender, feedsRender, UIRender,
+} from './view.js';
 
 const runApp = () => {
   const defaultLanguage = 'ru';
@@ -44,48 +39,17 @@ const runApp = () => {
         feedsRender(state);
         break;
       case 'posts':
-        console.log(state.posts);
         postsRender(state, i18nInstance, watchedState);
-        uiRender(state);
+        UIRender(state);
         break;
       case 'uiState.shownPosts':
-        uiRender(state);
+        UIRender(state);
         break;
       default:
     }
   });
 
-  const formElement = document.querySelector('.rss-form');
-  const formEl = document.querySelector('#rss-link');
-  formEl.focus();
-
-  formElement.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    const rss = formData.get('rss');
-    formElement.reset();
-    formEl.focus();
-    validate(rss, state)
-      .then(() => getResponse(rss))
-      .then((xmlString) => rssParser(xmlString))
-      .then((document) => {
-        console.log('Получили документ');
-        const [feedId, feed] = getFeed(rss, document);
-        watchedState.feeds.unshift(feed);
-        const posts = getPosts(feedId, document);
-        watchedState.posts.unshift(...posts);
-        console.log(state);
-      })
-      .then(() => {
-        console.log('Меняем стейт');
-        watchedState.rssForm.state = 'successLoad';
-        updatePosts(state, watchedState);
-      })
-      .catch((error) => {
-        watchedState.rssForm.state = error.message;
-        console.log(`Поймали ошибку ${error.message}`);
-      });
-  });
+  init(state, watchedState);
 };
 
 export default runApp;

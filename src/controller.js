@@ -112,7 +112,6 @@ export default (state, watchedState) => {
         formInput.removeAttribute('readonly');
         formInput.focus();
         watched.rssForm.state = error.message;
-        console.log(`Поймали ошибку ${error.message}`);
       });
   });
 };

@@ -99,7 +99,7 @@ export default (state, watchedState) => {
       })
       .then(() => {
         formElement.reset();
-        formInput.focus();
+        formInput.value = '';
         submitEl.disabled = false;
         formInput.removeAttribute('readonly');
 

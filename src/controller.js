@@ -82,7 +82,7 @@ export default (state, watchedState) => {
     e.preventDefault();
     console.log(e.target)
     const formData = new FormData(e.target);
-    const rss = formData.get('url-link');
+    const rss = formData.get('url');
     formElement.reset();
     formInput.focus();
     validate(rss, state)

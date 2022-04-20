@@ -91,7 +91,6 @@ export default (state, watchedState) => {
       .then(() => getResponse(rss))
       .then((xmlString) => rssParser(xmlString))
       .then((document) => {
-        console.log('Получили документ');
         const [feedId, feed] = getFeed(rss, document);
         watchedState.feeds.unshift(feed);
         const posts = getPosts(feedId, document);

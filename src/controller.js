@@ -101,6 +101,7 @@ export default (state, watchedState) => {
         formInput.value = '';
         submitEl.disabled = false;
         formInput.removeAttribute('readonly');
+        formInput.focus();
 
         console.log('Меняем стейт');
         watched.rssForm.state = 'successLoad';

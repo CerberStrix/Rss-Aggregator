@@ -30,7 +30,8 @@ const feedsRender = (state) => {
 };
 
 const formRender = (value, i18nInstance) => {
-  const rssInputElement = document.querySelector('#url-input');
+  const rssInputElement = document.getElementById('url-input');
+  console.log(rssInputElement);
   rssInputElement.classList.remove('is-invalid');
 
   const containerForFeedBack = document.querySelector('[data-container="rss-link"]');

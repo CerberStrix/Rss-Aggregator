@@ -6,7 +6,9 @@
   "main": "src/init.js",
   "scripts": {
     "webpack": "webpack",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prod": "webpack -p",
+    "build": "webpack -d"
   },
   "repository": {
     "type": "git",

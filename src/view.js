@@ -34,7 +34,7 @@ const formRender = (value, i18nInstance) => {
     document.querySelector('[data-toggle="feedbackText"]').remove();
   }
 
-  const rssInputElement = document.querySelector('#rss-link');
+  const rssInputElement = document.querySelector('#url');
   rssInputElement.classList.remove('is-invalid');
 
   const containerForFeedBack = document.querySelector('[data-container="rss-link"]');

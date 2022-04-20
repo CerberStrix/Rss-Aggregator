@@ -75,15 +75,16 @@ const updatePosts = (state, watchedState) => {
 export default (state, watchedState) => {
   const watched = watchedState;
   const formElement = document.querySelector('.rss-form');
-  const formEl = document.querySelector('#rss-link');
-  formEl.focus();
+  const formInput = document.querySelector('#url');
+  formInput.focus();
 
   formElement.addEventListener('submit', (e) => {
     e.preventDefault();
+    console.log(e.target)
     const formData = new FormData(e.target);
-    const rss = formData.get('url');
+    const rss = formData.get('url-link');
     formElement.reset();
-    formEl.focus();
+    formInput.focus();
     validate(rss, state)
       .then(() => getResponse(rss))
       .then((xmlString) => rssParser(xmlString))
@@ -93,7 +94,6 @@ export default (state, watchedState) => {
         watchedState.feeds.unshift(feed);
         const posts = getPosts(feedId, document);
         watchedState.posts.unshift(...posts);
-        console.log(state);
       })
       .then(() => {
         console.log('Меняем стейт');

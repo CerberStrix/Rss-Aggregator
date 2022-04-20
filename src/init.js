@@ -31,11 +31,13 @@ const runApp = () => {
   });
 
   const rssInputElement = document.getElementById('url-input');
+  const containerForFeedBack = document.querySelector('[data-container="rss-link"]');
+  const notification = document.querySelector('[data-toggle="feedbackText"]');
 
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'rssForm.state':
-        formRender(value, i18nInstance, rssInputElement);
+        formRender(value, i18nInstance, rssInputElement, containerForFeedBack, notification);
         break;
       case 'feeds':
         feedsRender(state);

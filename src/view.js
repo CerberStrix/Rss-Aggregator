@@ -29,49 +29,47 @@ const feedsRender = (state) => {
   feedElement.append(ulElement);
 };
 
-const formRender = (value, i18nInstance, element) => {
-  element.classList.remove('is-invalid');
+const formRender = (value, i18nInstance, rssInputElement, containerForFeedBack, notification) => {
+  rssInputElement.classList.remove('is-invalid');
 
-  const containerForFeedBack = document.querySelector('[data-container="rss-link"]');
-  const progressNotification = document.querySelector('[data-toggle="feedbackText"]');
-
+  const textContent = notification;
   switch (value) {
     case 'successLoad':
       console.log('Отработал положительный сценарий');
-      progressNotification.classList.remove('text-danger');
-      progressNotification.classList.add('text-success');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.remove('text-danger');
+      notification.classList.add('text-success');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
     case 'duplicateUrl':
-      progressNotification.classList.add('text-danger');
-      element.classList.add('is-invalid');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
     case 'invalidUrl':
-      progressNotification.classList.add('text-danger');
-      element.classList.add('is-invalid');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
     case 'parsingError':
-      progressNotification.classList.add('text-danger');
-      element.classList.add('is-invalid');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
     case 'netWorkError':
-      progressNotification.classList.add('text-danger');
-      element.classList.add('is-invalid');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
     case 'emptyUrl':
-      progressNotification.classList.add('text-danger');
-      element.classList.add('is-invalid');
-      progressNotification.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(progressNotification);
+      notification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      textContent.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(notification);
       break;
 
     default:

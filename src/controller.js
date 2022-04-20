@@ -80,7 +80,7 @@ export default (state, watchedState) => {
 
   formElement.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log(e.target)
+    console.log(e.target);
     const formData = new FormData(e.target);
     const rss = formData.get('url');
     formElement.reset();

@@ -74,6 +74,7 @@ const updatePosts = (state, watchedState) => {
 
 export default (state, watchedState) => {
   const watched = watchedState;
+  const submitEl = document.querySelector('button[type="submit"]');
   const formElement = document.querySelector('.rss-form');
   const formInput = document.querySelector('#url-input');
   formInput.focus();
@@ -83,8 +84,10 @@ export default (state, watchedState) => {
     console.log(e.target);
     const formData = new FormData(e.target);
     const rss = formData.get('url');
-    formElement.reset();
-    formInput.focus();
+
+    submitEl.disabled = true;
+    formInput.setAttribute('readonly', 'true');
+
     validate(rss, state)
       .then(() => getResponse(rss))
       .then((xmlString) => rssParser(xmlString))
@@ -96,11 +99,18 @@ export default (state, watchedState) => {
         watchedState.posts.unshift(...posts);
       })
       .then(() => {
+        formElement.reset();
+        formInput.focus();
+        submitEl.disabled = false;
+        formInput.removeAttribute('readonly');
+
         console.log('Меняем стейт');
         watched.rssForm.state = 'successLoad';
         updatePosts(state, watchedState);
       })
       .catch((error) => {
+        submitEl.disabled = false;
+        formInput.removeAttribute('readonly');
         watched.rssForm.state = error.message;
         console.log(`Поймали ошибку ${error.message}`);
       });

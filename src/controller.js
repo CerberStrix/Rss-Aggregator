@@ -111,6 +111,8 @@ export default (state, watchedState) => {
       .catch((error) => {
         submitEl.disabled = false;
         formInput.removeAttribute('readonly');
+        formElement.reset();
+        formInput.focus();
         watched.rssForm.state = error.message;
         console.log(`Поймали ошибку ${error.message}`);
       });

@@ -73,6 +73,13 @@ const formRender = (value, i18nInstance) => {
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;
+    case 'emptyUrl':
+      progressNotification.classList.add('text-danger');
+      rssInputElement.classList.add('is-invalid');
+      progressNotification.textContent = i18nInstance.t(value);
+      containerForFeedBack.append(progressNotification);
+      break;
+
     default:
       console.log(`Sorry, we are out of ${value}.`);
   }

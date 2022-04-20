@@ -6,6 +6,7 @@ export default (link, state) => {
   const schema = yup.string().url().notOneOf(feedsLinks).required();
   return schema.validate(link, { abortEarly: false })
     .then(() => '').catch((e) => {
+      console.log(e.message);
       switch (e.message) {
         case 'this is a required field':
           throw new Error('emptyUrl');

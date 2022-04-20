@@ -74,6 +74,7 @@ const formRender = (value, i18nInstance, rssInputElement, containerForFeedBack, 
 
     default:
       console.log(`Sorry, we are out of ${value}.`);
+      break;
   }
 };
 

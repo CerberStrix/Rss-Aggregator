@@ -30,16 +30,11 @@ const feedsRender = (state) => {
 };
 
 const formRender = (value, i18nInstance) => {
-  if (document.querySelector('[data-toggle="feedbackText"]')) {
-    document.querySelector('[data-toggle="feedbackText"]').remove();
-  }
-
   const rssInputElement = document.querySelector('#url-input');
   rssInputElement.classList.remove('is-invalid');
 
   const containerForFeedBack = document.querySelector('[data-container="rss-link"]');
-  const progressNotification = document.createElement('p');
-  progressNotification.dataset.toggle = 'feedbackText';
+  const progressNotification = document.querySelector('[data-toggle="feedbackText"]');
 
   switch (value) {
     case 'successLoad':

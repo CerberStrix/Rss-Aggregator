@@ -67,7 +67,6 @@ const updatePosts = (state, watchedState) => {
       setTimeout(updatePosts, 5000, state, watchedState);
     })
     .catch(() => {
-      stateWatch.rssForm.state = 'netWorkError';
       setTimeout(updatePosts, 5000, state, watchedState);
     });
 };

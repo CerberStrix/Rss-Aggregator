@@ -29,10 +29,8 @@ const feedsRender = (state) => {
   feedElement.append(ulElement);
 };
 
-const formRender = (value, i18nInstance) => {
-  const rssInputElement = document.getElementById('url-input');
-  console.log(rssInputElement);
-  rssInputElement.classList.remove('is-invalid');
+const formRender = (value, i18nInstance, element) => {
+  element.classList.remove('is-invalid');
 
   const containerForFeedBack = document.querySelector('[data-container="rss-link"]');
   const progressNotification = document.querySelector('[data-toggle="feedbackText"]');
@@ -47,31 +45,31 @@ const formRender = (value, i18nInstance) => {
       break;
     case 'duplicateUrl':
       progressNotification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
+      element.classList.add('is-invalid');
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;
     case 'invalidUrl':
       progressNotification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
+      element.classList.add('is-invalid');
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;
     case 'parsingError':
       progressNotification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
+      element.classList.add('is-invalid');
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;
     case 'netWorkError':
       progressNotification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
+      element.classList.add('is-invalid');
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;
     case 'emptyUrl':
       progressNotification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
+      element.classList.add('is-invalid');
       progressNotification.textContent = i18nInstance.t(value);
       containerForFeedBack.append(progressNotification);
       break;

@@ -30,10 +30,12 @@ const runApp = () => {
     },
   });
 
+  const rssInputElement = document.getElementById('url-input');
+
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'rssForm.state':
-        formRender(value, i18nInstance);
+        formRender(value, i18nInstance, rssInputElement);
         break;
       case 'feeds':
         feedsRender(state);

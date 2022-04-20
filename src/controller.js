@@ -75,7 +75,7 @@ const updatePosts = (state, watchedState) => {
 export default (state, watchedState) => {
   const watched = watchedState;
   const formElement = document.querySelector('.rss-form');
-  const formInput = document.querySelector('#url');
+  const formInput = document.querySelector('#url-input');
   formInput.focus();
 
   formElement.addEventListener('submit', (e) => {

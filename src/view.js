@@ -1,34 +1,3 @@
-const feedsRender = (state) => {
-  const feedElement = document.querySelector('[data-container="feeds"]');
-  feedElement.innerHTML = '';
-  const feedCard = document.createElement('div');
-  feedCard.classList.add('card-body');
-  const feedTittle = document.createElement('h3');
-  feedTittle.textContent = 'Фиды';
-  feedCard.append(feedTittle);
-  feedElement.append(feedCard);
-
-  const ulElement = document.createElement('ul');
-  ulElement.classList.add('list-group');
-  ulElement.classList.add('border-0');
-  ulElement.classList.add('rounded-0');
-  state.feeds.map(({ feedTitle, feedDescription }) => {
-    const liElement = document.createElement('li');
-    liElement.classList.add('list-group-item');
-    const itemTitle = document.createElement('h6');
-    itemTitle.textContent = feedTitle;
-    const itemDescription = document.createElement('p');
-    itemDescription.classList.add('small');
-    itemDescription.classList.add('text-black-50');
-    itemDescription.textContent = feedDescription;
-    liElement.append(itemTitle);
-    liElement.append(itemDescription);
-    ulElement.append(liElement);
-    return true;
-  });
-  feedElement.append(ulElement);
-};
-
 const formRender = (value, selectors, i18nInstance) => {
   const elements = selectors;
   elements.inputElement.classList.remove('is-invalid');
@@ -62,25 +31,55 @@ const formRender = (value, selectors, i18nInstance) => {
   }
 };
 
+const feedsRender = (state, selectors) => {
+  const elements = selectors;
+  elements.feedContainer.innerHTML = '';
+  const feedCard = document.createElement('div');
+  feedCard.classList.add('card-body');
+  const feedTittle = document.createElement('h3');
+  feedTittle.textContent = 'Фиды';
+  feedCard.append(feedTittle);
+  elements.feedContainer.append(feedCard);
+
+  const ulElement = document.createElement('ul');
+  ulElement.classList.add('list-group');
+  ulElement.classList.add('border-0');
+  ulElement.classList.add('rounded-0');
+  state.feeds.map(({ feedTitle, feedDescription }) => {
+    const liElement = document.createElement('li');
+    liElement.classList.add('list-group-item');
+    const itemTitle = document.createElement('h6');
+    itemTitle.textContent = feedTitle;
+    const itemDescription = document.createElement('p');
+    itemDescription.classList.add('small');
+    itemDescription.classList.add('text-black-50');
+    itemDescription.textContent = feedDescription;
+    liElement.append(itemTitle);
+    liElement.append(itemDescription);
+    ulElement.append(liElement);
+    return true;
+  });
+  elements.feedContainer.append(ulElement);
+};
+
 const renderModal = (title, link, description) => {
-  const modal = document.querySelector('#exampleModal');
-  const modalTitle = modal.querySelector('#exampleModalLabel');
-  const modalDiscription = modal.querySelector('.modal-body');
-  const button = modal.querySelector('.btn-primary');
+  const modalTitle = document.querySelector('#exampleModalLabel');
+  const modalDiscription = document.querySelector('.modal-body');
+  const button = document.querySelector('.btn-primary');
   button.href = link;
   modalTitle.textContent = title;
   modalDiscription.textContent = description;
 };
 
-const postsRender = (state, i18nInstance, watchedState) => {
-  const postsElement = document.querySelector('[data-container="posts"]');
-  postsElement.innerHTML = '';
+const postsRender = (state, i18nInstance, watchedState, selectors) => {
+  const elements = selectors;
+  elements.postsContainer.innerHTML = '';
   const postCard = document.createElement('div');
   postCard.classList.add('card-body');
   const postTittle = document.createElement('h3');
   postTittle.textContent = 'Посты';
   postCard.append(postTittle);
-  postsElement.append(postCard);
+  elements.postsContainer.append(postCard);
 
   const postUlElement = document.createElement('ul');
   state.posts
@@ -120,7 +119,7 @@ const postsRender = (state, i18nInstance, watchedState) => {
       return true;
     });
 
-  postsElement.append(postUlElement);
+  elements.postsContainer.append(postUlElement);
 };
 
 const UIRender = (state) => {

@@ -1,6 +1,6 @@
 import onChange from 'on-change';
 import i18next from 'i18next';
-import init from './controller.js';
+import controller from './controller.js';
 import ru from './locales/ru.js';
 
 import {
@@ -33,7 +33,8 @@ const runApp = () => {
   const selectors = {
     inputElement: document.querySelector('#url-input'),
     notificationElement: document.querySelector('[data-toggle="feedbackText"]'),
-
+    feedContainer: document.querySelector('[data-container="feeds"]'),
+    postsContainer: document.querySelector('[data-container="posts"]'),
   };
 
   const watchedState = onChange(state, (path, value) => {
@@ -42,10 +43,10 @@ const runApp = () => {
         formRender(value, selectors, i18nInstance);
         break;
       case 'feeds':
-        feedsRender(state);
+        feedsRender(state, selectors);
         break;
       case 'posts':
-        postsRender(state, i18nInstance, watchedState);
+        postsRender(state, i18nInstance, watchedState, selectors);
         UIRender(state);
         break;
       case 'uiState.shownPosts':
@@ -55,7 +56,7 @@ const runApp = () => {
     }
   });
 
-  init(state, watchedState);
+  controller(state, watchedState);
 };
 
 export default runApp;

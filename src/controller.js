@@ -42,9 +42,7 @@ function updateFeedData(link, id) {
 
 const updatePosts = (state, watchedState) => {
   const allNewPosts = [];
-  console.log('Запускаем обновление постов');
   const stateWatch = watchedState;
-
   const promises = state.feeds.map(({ feedLink, feedId }) => updateFeedData(feedLink, feedId));
 
   const promise = Promise.all(promises);
@@ -71,45 +69,50 @@ const updatePosts = (state, watchedState) => {
     });
 };
 
-export default (state, watchedState) => {
-  const watched = watchedState;
-  const submitEl = document.querySelector('button[type="submit"]');
-  const formElement = document.querySelector('.rss-form');
-  const formInput = document.querySelector('#url-input');
-  formInput.focus();
+const blockingInterface = (selectors) => {
+  const elements = selectors;
+  elements.submitButton.disabled = true;
+  elements.inputElement.setAttribute('readonly', 'true');
+};
 
-  formElement.addEventListener('submit', (e) => {
+const unblockingInterface = (selectors) => {
+  const elements = selectors;
+  elements.submitButton.disabled = false;
+  elements.inputElement.removeAttribute('readonly');
+};
+export default (state, watchedState, selectors) => {
+  const elements = selectors;
+  const watched = watchedState;
+  elements.inputElement.focus();
+
+  elements.formElement.addEventListener('submit', (e) => {
     e.preventDefault();
     console.log(e.target);
     const formData = new FormData(e.target);
     const rss = formData.get('url');
 
-    submitEl.disabled = true;
-    formInput.setAttribute('readonly', 'true');
+    blockingInterface(selectors);
 
     validate(rss, state)
       .then(() => getResponse(rss))
       .then((xmlString) => rssParser(xmlString))
       .then((document) => {
         const [feedId, feed] = getFeed(rss, document);
-        watchedState.feeds.unshift(feed);
+        watched.feeds.unshift(feed);
         const posts = getPosts(feedId, document);
-        watchedState.posts.unshift(...posts);
+        watched.posts.unshift(...posts);
       })
       .then(() => {
-        formInput.value = '';
-        submitEl.disabled = false;
-        formInput.removeAttribute('readonly');
-        formInput.focus();
-
-        console.log('Меняем стейт');
+        elements.inputElement.value = '';
+        elements.inputElement.focus();
+        unblockingInterface(selectors);
         watched.rssForm.state = 'successLoad';
-        updatePosts(state, watchedState);
+        updatePosts(state, watched);
       })
       .catch((error) => {
-        submitEl.disabled = false;
-        formInput.removeAttribute('readonly');
-        formInput.focus();
+        elements.submitButton.disabled = false;
+        elements.inputElement.removeAttribute('readonly');
+        elements.inputElement.focus();
         watched.rssForm.state = error.message;
       });
   });

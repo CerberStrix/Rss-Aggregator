@@ -71,8 +71,9 @@ const renderModal = (title, link, description) => {
   modalDiscription.textContent = description;
 };
 
-const postsRender = (state, i18nInstance, watchedState, selectors) => {
+const postsRender = (state, selectors, watchedUIState, i18nInstance) => {
   const elements = selectors;
+  const ui = watchedUIState;
   elements.postsContainer.innerHTML = '';
   const postCard = document.createElement('div');
   postCard.classList.add('card-body');
@@ -105,16 +106,12 @@ const postsRender = (state, i18nInstance, watchedState, selectors) => {
       postUlElement.append(liElement);
 
       itemTitle.addEventListener('click', (e) => {
-        if (!state.uiState.shownPosts.includes(e.target.dataset.id)) {
-          watchedState.uiState.shownPosts.push(e.target.dataset.id);
-        }
+        ui[e.target.dataset.id] = 'shown';
       });
 
       buttonEl.addEventListener('click', (e) => {
         renderModal(title, link, description);
-        if (!state.uiState.shownPosts.includes(e.target.dataset.id)) {
-          watchedState.uiState.shownPosts.push(e.target.dataset.id);
-        }
+        ui[e.target.dataset.id] = 'shown';
       });
       return true;
     });
@@ -122,10 +119,10 @@ const postsRender = (state, i18nInstance, watchedState, selectors) => {
   elements.postsContainer.append(postUlElement);
 };
 
-const UIRender = (state) => {
+const UIRender = (uiState) => {
   const anchors = document.querySelectorAll('a');
   anchors.forEach((anchor) => {
-    if (state.uiState.shownPosts.includes(anchor.dataset.id)) {
+    if (uiState[anchor.dataset.id] === 'shown') {
       anchor.classList.remove('fw-bold');
       anchor.classList.add('fw-normal');
       anchor.classList.add('link-secondary');

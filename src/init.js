@@ -16,10 +16,9 @@ const runApp = () => {
     },
     feeds: [],
     posts: [],
-    uiState: {
-      shownPosts: [],
-    },
   };
+
+  const uiState = {};
 
   const i18nInstance = i18next.createInstance();
   i18nInstance.init({
@@ -31,11 +30,17 @@ const runApp = () => {
   });
 
   const selectors = {
+    formElement: document.querySelector('.rss-form'),
     inputElement: document.querySelector('#url-input'),
+    submitButton: document.querySelector('button[type="submit"]'),
     notificationElement: document.querySelector('[data-toggle="feedbackText"]'),
     feedContainer: document.querySelector('[data-container="feeds"]'),
     postsContainer: document.querySelector('[data-container="posts"]'),
   };
+
+  const watchedUIState = onChange(uiState, () => {
+    UIRender(uiState);
+  });
 
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
@@ -46,17 +51,14 @@ const runApp = () => {
         feedsRender(state, selectors);
         break;
       case 'posts':
-        postsRender(state, i18nInstance, watchedState, selectors);
-        UIRender(state);
-        break;
-      case 'uiState.shownPosts':
-        UIRender(state);
+        postsRender(state, selectors, watchedUIState, i18nInstance);
+        UIRender(uiState);
         break;
       default:
     }
   });
 
-  controller(state, watchedState);
+  controller(state, watchedState, selectors);
 };
 
 export default runApp;

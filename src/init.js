@@ -30,14 +30,19 @@ const runApp = () => {
     },
   });
 
+  const selectors = {
+    inputElement: document.querySelector('#url-input'),
+    notificationElement: document.querySelector('[data-toggle="feedbackText"]'),
+
+  };
+
   const rssInputElement = document.getElementById('url-input');
-  const containerForFeedBack = document.querySelector('[data-container="rss-link"]');
-  const notification = document.querySelector('[data-toggle="feedbackText"]');
+  const notificationElement = document.querySelector('[data-toggle="feedbackText"]');
 
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'rssForm.state':
-        formRender(value, i18nInstance, rssInputElement, containerForFeedBack, notification);
+        formRender(value, selectors, i18nInstance);
         break;
       case 'feeds':
         feedsRender(state);

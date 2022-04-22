@@ -29,49 +29,34 @@ const feedsRender = (state) => {
   feedElement.append(ulElement);
 };
 
-const formRender = (value, i18nInstance, rssInputElement, containerForFeedBack, notification) => {
-  rssInputElement.classList.remove('is-invalid');
+const formRender = (value, selectors, i18nInstance) => {
+  const elements = selectors;
+  elements.inputElement.classList.remove('is-invalid');
+  elements.notificationElement.classList.add('text-danger');
+  elements.inputElement.classList.add('is-invalid');
 
-  const textContent = notification;
   switch (value) {
     case 'successLoad':
-      console.log('Отработал положительный сценарий');
-      notification.classList.remove('text-danger');
-      notification.classList.add('text-success');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.classList.remove('text-danger');
+      elements.notificationElement.classList.add('text-success');
+      elements.inputElement.classList.remove('is-invalid');
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
     case 'duplicateUrl':
-      notification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
     case 'invalidUrl':
-      notification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
     case 'parsingError':
-      notification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
     case 'netWorkError':
-      notification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
     case 'emptyUrl':
-      notification.classList.add('text-danger');
-      rssInputElement.classList.add('is-invalid');
-      textContent.textContent = i18nInstance.t(value);
-      containerForFeedBack.append(notification);
+      elements.notificationElement.textContent = i18nInstance.t(value);
       break;
-
     default:
       break;
   }

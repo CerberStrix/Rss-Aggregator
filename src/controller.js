@@ -97,7 +97,6 @@ export default (state, watchedState) => {
         watchedState.posts.unshift(...posts);
       })
       .then(() => {
-        formElement.reset();
         formInput.value = '';
         submitEl.disabled = false;
         formInput.removeAttribute('readonly');

@@ -110,8 +110,7 @@ export default (state, watchedState, selectors) => {
         updatePosts(state, watched);
       })
       .catch((error) => {
-        elements.submitButton.disabled = false;
-        elements.inputElement.removeAttribute('readonly');
+        unblockingInterface(selectors);
         elements.inputElement.focus();
         watched.rssForm.state = error.message;
       });

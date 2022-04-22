@@ -36,9 +36,6 @@ const runApp = () => {
 
   };
 
-  const rssInputElement = document.getElementById('url-input');
-  const notificationElement = document.querySelector('[data-toggle="feedbackText"]');
-
   const watchedState = onChange(state, (path, value) => {
     switch (path) {
       case 'rssForm.state':

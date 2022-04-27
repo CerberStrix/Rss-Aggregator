@@ -1,43 +1,52 @@
-const formRender = (value, selectors, i18nInstance) => {
+const formRender = (state, selectors, i18nInstance) => {
   const elements = selectors;
-  elements.inputElement.classList.remove('is-invalid');
-  elements.notificationElement.classList.add('text-danger');
-  elements.inputElement.classList.add('is-invalid');
+  const formState = state.rssForm.state;
+  const errors = state.rssForm.errors ? state.rssForm.errors : null;
 
-  switch (value) {
+  elements.notificationElement.classList.remove('text-danger');
+  elements.notificationElement.classList.remove('text-success');
+  elements.inputElement.classList.remove('is-invalid');
+
+  switch (formState) {
     case 'successLoad':
-      elements.notificationElement.classList.remove('text-danger');
       elements.notificationElement.classList.add('text-success');
-      elements.inputElement.classList.remove('is-invalid');
-      elements.notificationElement.textContent = i18nInstance.t(value);
+      elements.notificationElement.textContent = i18nInstance.t(formState);
+      elements.inputElement.value = '';
+      elements.inputElement.focus();
       break;
-    case 'duplicateUrl':
-      elements.notificationElement.textContent = i18nInstance.t(value);
-      break;
-    case 'invalidUrl':
-      elements.notificationElement.textContent = i18nInstance.t(value);
-      break;
-    case 'parsingError':
-      elements.notificationElement.textContent = i18nInstance.t(value);
-      break;
-    case 'netWorkError':
-      elements.notificationElement.textContent = i18nInstance.t(value);
-      break;
-    case 'emptyUrl':
-      elements.notificationElement.textContent = i18nInstance.t(value);
+    case 'unsuccessfulLoad':
+      elements.notificationElement.classList.add('text-danger');
+      elements.inputElement.classList.add('is-invalid');
+      elements.notificationElement.textContent = i18nInstance.t(errors);
+      elements.inputElement.focus();
       break;
     default:
       break;
   }
 };
+const inputBlocker = (state, selectors) => {
+  const elements = selectors;
+  switch (state.rssForm.inputStatus) {
+    case 'blocked':
+      elements.submitButton.disabled = true;
+      elements.inputElement.setAttribute('readonly', 'true');
+      break;
+    case 'unblocked':
+      elements.submitButton.disabled = false;
+      elements.inputElement.removeAttribute('readonly');
+      break;
+    default:
+      throw new Error('undefined inputs element status');
+  }
+};
 
-const feedsRender = (state, selectors) => {
+const feedsRender = (state, selectors, i18nInstance) => {
   const elements = selectors;
   elements.feedContainer.innerHTML = '';
   const feedCard = document.createElement('div');
   feedCard.classList.add('card-body');
   const feedTittle = document.createElement('h3');
-  feedTittle.textContent = 'Фиды';
+  feedTittle.textContent = i18nInstance.t('feeds');
   feedCard.append(feedTittle);
   elements.feedContainer.append(feedCard);
 
@@ -46,6 +55,39 @@ const feedsRender = (state, selectors) => {
   ulElement.classList.add('border-0');
   ulElement.classList.add('rounded-0');
   state.feeds.map(({ feedTitle, feedDescription }) => {
+    const liElement = document.createElement('li');
+    liElement.classList.add('list-group-item');
+    const itemTitle = document.createElement('h6');
+    itemTitle.textContent = feedTitle;
+    const itemDescription = document.createElement('p');
+    itemDescription.classList.add('small');
+    itemDescription.classList.add('text-black-50');
+    itemDescription.textContent = feedDescription;
+    liElement.append(itemTitle);
+    liElement.append(itemDescription);
+    ulElement.append(liElement);
+    return true;
+  });
+  elements.feedContainer.append(ulElement);
+};
+
+const renderFeeds = (state, selectors, i18nInstance) => {
+  const elements = selectors;
+  elements.feedContainer.innerHTML = '';
+  const feedCard = document.createElement('div');
+  feedCard.classList.add('card-body');
+  const feedTittle = document.createElement('h3');
+  feedTittle.textContent = i18nInstance.t('feeds');
+  feedCard.append(feedTittle);
+  elements.feedContainer.append(feedCard);
+
+  const ulElement = document.createElement('ul');
+  ulElement.classList.add('list-group');
+  ulElement.classList.add('border-0');
+  ulElement.classList.add('rounded-0');
+
+  const feeds = Object.entries(state.feeds);
+  feeds.map(([, { feedTitle, feedDescription }]) => {
     const liElement = document.createElement('li');
     liElement.classList.add('list-group-item');
     const itemTitle = document.createElement('h6');
@@ -78,7 +120,7 @@ const postsRender = (state, selectors, watchedUIState, i18nInstance) => {
   const postCard = document.createElement('div');
   postCard.classList.add('card-body');
   const postTittle = document.createElement('h3');
-  postTittle.textContent = 'Посты';
+  postTittle.textContent = i18nInstance.t('posts');
   postCard.append(postTittle);
   elements.postsContainer.append(postCard);
 
@@ -115,7 +157,6 @@ const postsRender = (state, selectors, watchedUIState, i18nInstance) => {
       });
       return true;
     });
-
   elements.postsContainer.append(postUlElement);
 };
 
@@ -135,5 +176,5 @@ const UIRender = (uiState) => {
 };
 
 export {
-  formRender, postsRender, feedsRender, renderModal, UIRender,
+  formRender, postsRender, feedsRender, renderModal, UIRender, renderFeeds, inputBlocker,
 };

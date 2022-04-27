@@ -1,85 +1,42 @@
 import uniqueId from 'lodash/uniqueId.js';
-import rssParser from './rssParser.js';
+import getParse from './rssParser.js';
 import validate from './validate.js';
 import getResponse from './getResponse.js';
 
-const getFeed = (rsslink, data) => {
-  const feedId = uniqueId();
-  const feedTitle = data.querySelector('title').textContent;
-  const feedDescription = data.querySelector('description').textContent;
-  const feedLink = rsslink;
-  return [feedId, {
-    feedId,
-    feedLink,
-    feedTitle,
-    feedDescription,
-  }];
-};
+const updateFeed = (link, state, watchedState) => {
+  const watched = watchedState;
+  return getResponse(link)
+    .then((data) => getParse(data))
+    .then(({ feedTitle, feedDescription, posts }) => {
+      const newfeedId = uniqueId();
+      const feedsLinks = state.feeds.map(({ feedLink }) => feedLink);
+      if (!feedsLinks.includes(link)) {
+        watched.feeds.unshift({
+          feedId: newfeedId, feedLink: link, feedTitle, feedDescription,
+        });
+      }
+      const currentFeedId = state.feeds
+        .filter(({ feedLink }) => feedLink === link)
+        .map(({ feedId }) => feedId)
+        .pop();
 
-const getPosts = (feedId, data) => {
-  const items = data.querySelectorAll('item');
-  const postsArray = Array.from(items);
-  return postsArray.map((post) => {
-    const postId = uniqueId();
-    const title = post.querySelector('title').textContent;
-    const description = post.querySelector('description').textContent;
-    const link = post.querySelector('link').textContent;
-    return {
-      feedId,
-      postId,
-      title,
-      description,
-      link,
-    };
-  });
-};
+      const oldPosts = state.posts
+        .filter(({ feedId }) => feedId === currentFeedId)
+        .map(({ postlink }) => postlink);
 
-function updateFeedData(link, id) {
-  return new Promise((resolve, reject) => {
-    getResponse(link).then((responseData) => resolve([id, responseData])).catch(() => reject(new Error(`Ошибка при запросе данных фида ${link}`)));
-  });
-}
-
-const updatePosts = (state, watchedState) => {
-  const allNewPosts = [];
-  const stateWatch = watchedState;
-  const promises = state.feeds.map(({ feedLink, feedId }) => updateFeedData(feedLink, feedId));
-
-  const promise = Promise.all(promises);
-  promise.then((data) => {
-    data.map((result) => {
-      const [id, responseData] = result;
-      const xmlStirng = rssParser(responseData);
-      const updatedPosts = getPosts(id, xmlStirng);
-      const existingPostsLink = state.posts
-        .filter(({ feedId }) => feedId === id)
-        .map(({ link }) => link);
-      const newFeedsPosts = updatedPosts.filter(({ link }) => !existingPostsLink.includes(link));
-      allNewPosts.push(...newFeedsPosts);
-      return true;
-    });
-  })
-    .then(() => {
-      const oldPosts = state.posts;
-      stateWatch.posts = [...allNewPosts, ...oldPosts];
-      setTimeout(updatePosts, 5000, state, watchedState);
-    })
-    .catch(() => {
-      setTimeout(updatePosts, 5000, state, watchedState);
+      const newPosts = posts
+        .filter(({ postlink }) => !oldPosts.includes(postlink))
+        .map(({ title, description, postlink }) => {
+          const newPostId = uniqueId();
+          return {
+            feedId: currentFeedId, postId: newPostId, title, description, postlink,
+          };
+        });
+      watched.posts.unshift(...newPosts);
+      setTimeout(updateFeed, 5000, link, state, watchedState);
     });
 };
 
-const blockingInterface = (selectors) => {
-  const elements = selectors;
-  elements.submitButton.disabled = true;
-  elements.inputElement.setAttribute('readonly', 'true');
-};
-
-const unblockingInterface = (selectors) => {
-  const elements = selectors;
-  elements.submitButton.disabled = false;
-  elements.inputElement.removeAttribute('readonly');
-};
 export default (state, watchedState, selectors) => {
   const elements = selectors;
   const watched = watchedState;
@@ -87,32 +44,22 @@ export default (state, watchedState, selectors) => {
 
   elements.formElement.addEventListener('submit', (e) => {
     e.preventDefault();
-    console.log(e.target);
     const formData = new FormData(e.target);
     const rss = formData.get('url');
 
-    blockingInterface(selectors);
+    watched.rssForm.inputStatus = 'blocked';
 
     validate(rss, state)
-      .then(() => getResponse(rss))
-      .then((xmlString) => rssParser(xmlString))
-      .then((document) => {
-        const [feedId, feed] = getFeed(rss, document);
-        watched.feeds.unshift(feed);
-        const posts = getPosts(feedId, document);
-        watched.posts.unshift(...posts);
-      })
+      .then(() => updateFeed(rss, state, watchedState))
       .then(() => {
-        elements.inputElement.value = '';
-        elements.inputElement.focus();
-        unblockingInterface(selectors);
+        watched.rssForm.inputStatus = 'unblocked';
         watched.rssForm.state = 'successLoad';
-        updatePosts(state, watched);
+        watched.rssForm.errors = null;
       })
       .catch((error) => {
-        unblockingInterface(selectors);
-        elements.inputElement.focus();
-        watched.rssForm.state = error.message;
+        watched.rssForm.inputStatus = 'unblocked';
+        watched.rssForm.state = 'unsuccessfulLoad';
+        watched.rssForm.errors = error.message;
       });
   });
 };

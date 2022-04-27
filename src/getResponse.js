@@ -7,7 +7,6 @@ export default (rss) => {
   return axios.get(parsedURL.href)
     .then((response) => response.data.contents)
     .catch(() => {
-      console.log('Ошибка с запросом');
       throw new Error('netWorkError');
     });
 };

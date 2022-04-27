@@ -4,7 +4,7 @@ import controller from './controller.js';
 import ru from './locales/ru.js';
 
 import {
-  formRender, postsRender, feedsRender, UIRender,
+  formRender, postsRender, UIRender, renderFeeds, inputBlocker,
 } from './view.js';
 
 const runApp = () => {
@@ -13,6 +13,8 @@ const runApp = () => {
     lng: defaultLanguage,
     rssForm: {
       state: null,
+      inputStatus: 'unblocked',
+      errors: {},
     },
     feeds: [],
     posts: [],
@@ -42,13 +44,16 @@ const runApp = () => {
     UIRender(uiState);
   });
 
-  const watchedState = onChange(state, (path, value) => {
+  const watchedState = onChange(state, (path) => {
     switch (path) {
-      case 'rssForm.state':
-        formRender(value, selectors, i18nInstance);
+      case 'rssForm.errors':
+        formRender(state, selectors, i18nInstance);
+        break;
+      case 'rssForm.inputStatus':
+        inputBlocker(state, selectors);
         break;
       case 'feeds':
-        feedsRender(state, selectors);
+        renderFeeds(state, selectors, i18nInstance);
         break;
       case 'posts':
         postsRender(state, selectors, watchedUIState, i18nInstance);

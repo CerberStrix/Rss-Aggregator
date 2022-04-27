@@ -19,11 +19,9 @@ const updateFeed = (link, state, watchedState) => {
         .filter(({ feedLink }) => feedLink === link)
         .map(({ feedId }) => feedId)
         .pop();
-
       const oldPosts = state.posts
         .filter(({ feedId }) => feedId === currentFeedId)
         .map(({ postlink }) => postlink);
-
       const newPosts = posts
         .filter(({ postlink }) => !oldPosts.includes(postlink))
         .map(({ title, description, postlink }) => {

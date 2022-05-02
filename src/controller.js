@@ -9,7 +9,6 @@ const updateFeed = (link, state, watchedState) => {
     .then((data) => {
       const { feedTitle, feedDescription, posts } = getParse(data);
       const newfeedId = uniqueId();
-
       const feedsLinks = state.feeds.map(({ feedLink }) => feedLink);
       if (!feedsLinks.includes(link)) {
         watched.feeds.unshift({

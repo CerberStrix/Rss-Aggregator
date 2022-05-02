@@ -8,11 +8,10 @@ const updateFeed = (link, state, watchedState) => {
   return getResponse(link)
     .then((data) => {
       const { feedTitle, feedDescription, posts } = getParse(data);
-      const newfeedId = uniqueId();
       const feedsLinks = state.feeds.map(({ feedLink }) => feedLink);
       if (!feedsLinks.includes(link)) {
         watched.feeds.unshift({
-          feedId: newfeedId, feedLink: link, feedTitle, feedDescription,
+          feedId: uniqueId(), feedLink: link, feedTitle, feedDescription,
         });
       }
       const currentFeedId = (state.feeds.find((feed) => feed.feedLink === link)).feedId;
@@ -21,12 +20,9 @@ const updateFeed = (link, state, watchedState) => {
         .map(({ postlink }) => postlink);
       const newPosts = posts
         .filter(({ postlink }) => !oldPosts.includes(postlink))
-        .map(({ title, description, postlink }) => {
-          const newPostId = uniqueId();
-          return {
-            feedId: currentFeedId, postId: newPostId, title, description, postlink,
-          };
-        });
+        .map(({ title, description, postlink }) => ({
+          feedId: currentFeedId, postId: uniqueId(), title, description, postlink,
+        }));
       watched.posts.unshift(...newPosts);
       setTimeout(updateFeed, 5000, link, state, watchedState);
     });

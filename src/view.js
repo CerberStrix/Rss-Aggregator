@@ -3,40 +3,33 @@ const formRender = (state, selectors, i18nInstance) => {
   const formState = state.rssForm.state;
   const errors = state.rssForm.errors ? state.rssForm.errors : null;
 
+  elements.notificationElement.textContent = '';
   elements.notificationElement.classList.remove('text-danger');
   elements.notificationElement.classList.remove('text-success');
   elements.inputElement.classList.remove('is-invalid');
   elements.inputElement.focus();
 
   switch (formState) {
+    case 'processing':
+      elements.submitButton.disabled = true;
+      elements.inputElement.setAttribute('readonly', 'true');
+      break;
     case 'successLoad':
       elements.notificationElement.classList.add('text-success');
       elements.notificationElement.textContent = i18nInstance.t(formState);
       elements.inputElement.value = '';
+      elements.submitButton.disabled = false;
+      elements.inputElement.removeAttribute('readonly');
       break;
     case 'unsuccessfulLoad':
       elements.notificationElement.classList.add('text-danger');
       elements.inputElement.classList.add('is-invalid');
       elements.notificationElement.textContent = i18nInstance.t(errors);
-      break;
-    default:
-      break;
-  }
-};
-
-const inputBlocker = (state, selectors) => {
-  const elements = selectors;
-  switch (state.rssForm.inputStatus) {
-    case 'blocked':
-      elements.submitButton.disabled = true;
-      elements.inputElement.setAttribute('readonly', 'true');
-      break;
-    case 'unblocked':
       elements.submitButton.disabled = false;
       elements.inputElement.removeAttribute('readonly');
       break;
     default:
-      throw new Error('undefined inputs element status');
+      break;
   }
 };
 
@@ -140,5 +133,5 @@ const UIRender = (uiState) => {
 };
 
 export {
-  formRender, postsRender, renderModal, UIRender, renderFeeds, inputBlocker,
+  formRender, postsRender, renderModal, UIRender, renderFeeds,
 };

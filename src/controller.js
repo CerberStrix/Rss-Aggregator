@@ -6,19 +6,17 @@ import getResponse from './getResponse.js';
 const updateFeed = (link, state, watchedState) => {
   const watched = watchedState;
   return getResponse(link)
-    .then((data) => getParse(data))
-    .then(({ feedTitle, feedDescription, posts }) => {
+    .then((data) => {
+      const { feedTitle, feedDescription, posts } = getParse(data);
       const newfeedId = uniqueId();
+
       const feedsLinks = state.feeds.map(({ feedLink }) => feedLink);
       if (!feedsLinks.includes(link)) {
         watched.feeds.unshift({
           feedId: newfeedId, feedLink: link, feedTitle, feedDescription,
         });
       }
-      const currentFeedId = state.feeds
-        .filter(({ feedLink }) => feedLink === link)
-        .map(({ feedId }) => feedId)
-        .pop();
+      const currentFeedId = (state.feeds.find((feed) => feed.feedLink === link)).feedId;
       const oldPosts = state.posts
         .filter(({ feedId }) => feedId === currentFeedId)
         .map(({ postlink }) => postlink);
@@ -45,19 +43,17 @@ export default (state, watchedState, selectors) => {
     const formData = new FormData(e.target);
     const rss = formData.get('url');
 
-    watched.rssForm.inputStatus = 'blocked';
+    watched.rssForm.state = 'processing';
 
     validate(rss, state)
       .then(() => updateFeed(rss, state, watchedState))
       .then(() => {
-        watched.rssForm.inputStatus = 'unblocked';
-        watched.rssForm.state = 'successLoad';
         watched.rssForm.errors = null;
+        watched.rssForm.state = 'successLoad'; 
       })
       .catch((error) => {
-        watched.rssForm.inputStatus = 'unblocked';
-        watched.rssForm.state = 'unsuccessfulLoad';
         watched.rssForm.errors = error.message;
+        watched.rssForm.state = 'unsuccessfulLoad';
       });
   });
 };

@@ -4,7 +4,7 @@ import controller from './controller.js';
 import ru from './locales/ru.js';
 
 import {
-  formRender, postsRender, UIRender, renderFeeds, inputBlocker,
+  formRender, postsRender, UIRender, renderFeeds,
 } from './view.js';
 
 const runApp = () => {
@@ -46,11 +46,8 @@ const runApp = () => {
 
   const watchedState = onChange(state, (path) => {
     switch (path) {
-      case 'rssForm.errors':
+      case 'rssForm.state':
         formRender(state, selectors, i18nInstance);
-        break;
-      case 'rssForm.inputStatus':
-        inputBlocker(state, selectors);
         break;
       case 'feeds':
         renderFeeds(state, selectors, i18nInstance);

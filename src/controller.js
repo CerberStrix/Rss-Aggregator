@@ -42,14 +42,12 @@ export default (state, watchedState, selectors) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     const rss = formData.get('url');
-
     watched.rssForm.state = 'processing';
-
     validate(rss, state)
       .then(() => updateFeed(rss, state, watchedState))
       .then(() => {
         watched.rssForm.errors = null;
-        watched.rssForm.state = 'successLoad'; 
+        watched.rssForm.state = 'successLoad';
       })
       .catch((error) => {
         watched.rssForm.errors = error.message;
